@@ -31,7 +31,7 @@ export function Pagination({
       <button
         onClick={handlePrevious}
         disabled={page === 1}
-        className="border rounded px-4 py-2 disabled:opacity-50"
+        className="border rounded px-4 py-2 disabled:opacity-50 disabled:cursor-not-allowed"
       >
         前へ
       </button>
@@ -39,7 +39,7 @@ export function Pagination({
       <button
         onClick={handleNext}
         disabled={isLastPage}
-        className="border rounded px-4 py-2 disabled:opacity-50"
+        className="border rounded px-4 py-2 disabled:opacity-50 disabled:cursor-not-allowed"
       >
         次へ
       </button>

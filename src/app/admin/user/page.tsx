@@ -5,12 +5,13 @@ import { useListUsers } from "@/api/generated/api";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useDebounce } from "use-debounce";
 import Search from "@/components/ui/Search";
+import { Table, Column } from "@/components/ui/Table";
+import { Pagination } from "@/components/ui/Pagenation";
 import {
   formatDateToJapanese,
   formatGender,
   formatRole,
 } from "@/features/admin/user/util";
-import { Pagination } from "@/components/ui/Pagenation";
 import { UserView } from "@/features/admin/user/types/view";
 
 export default function AdminUserPage() {
@@ -60,6 +61,47 @@ export default function AdminUserPage() {
         updatedAt: user.updatedAt,
       };
     }) ?? [];
+
+  const columns: Column<UserView>[] = [
+    { key: "name", label: "名前" },
+    { key: "email", label: "メール" },
+    {
+      key: "prefecture",
+      label: "住所",
+      render: (_, row) => row.prefecture + row.city,
+    },
+    {
+      key: "gender",
+      label: "性別",
+      render: (value) => (
+        <span
+          className={`inline-block px-2 py-1 rounded text-sm font-medium ${
+            value === "男性"
+              ? "bg-blue-100 text-blue-700"
+              : "bg-red-100 text-red-700"
+          }`}
+        >
+          {value}
+        </span>
+      ),
+    },
+    { key: "birthday", label: "誕生日" },
+    {
+      key: "role",
+      label: "権限",
+      render: (value) => (
+        <span
+          className={`inline-block px-2 py-1 rounded text-sm font-medium ${
+            value === "一般"
+              ? "bg-blue-100 text-blue-700"
+              : "bg-red-100 text-red-700"
+          }`}
+        >
+          {value}
+        </span>
+      ),
+    },
+  ];
 
   useEffect(() => {
     const params = new URLSearchParams();
@@ -120,45 +162,7 @@ export default function AdminUserPage() {
               ユーザーが見つかりませんでした
             </div>
           ) : (
-            <div className="overflow-x-auto border rounded-xl shadow">
-              <table className="min-w-full table-auto">
-                <thead className="bg-gray-100">
-                  <tr>
-                    <th className="px-4 py-2 text-left">名前</th>
-                    <th className="px-4 py-2 text-left">メール</th>
-                    <th className="px-4 py-2 text-left">住所</th>
-                    <th className="px-4 py-2 text-left">性別</th>
-                    <th className="px-4 py-2 text-left">誕生日</th>
-                    <th className="px-4 py-2 text-right">権限</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {userList.map((user) => (
-                    <tr
-                      key={user.id}
-                      className="hover:bg-gray-50 border-t border-gray-200"
-                    >
-                      <td className="px-4 py-2 font-medium">{user.name}</td>
-                      <td className="px-4 py-2">{user.email}</td>
-                      <td className="px-4 py-2">
-                        {user.prefecture + user.city}
-                      </td>
-                      <td className="px-4 py-2">
-                        <span className="inline-block bg-blue-100 text-blue-700 px-2 py-1 rounded text-sm">
-                          {user.gender}
-                        </span>
-                      </td>
-                      <td className="px-4 py-2">{user.birthday}</td>
-                      <td className="px-4 py-2 text-right">
-                        <span className="inline-block bg-purple-100 text-purple-700 px-2 py-1 rounded text-sm">
-                          {user.role}
-                        </span>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
+            <Table data={userList} columns={columns} keyField="id" />
           )}
 
           <Pagination

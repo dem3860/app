@@ -1,8 +1,12 @@
-type Column<T> = {
+// components/ui/Table.tsx
+
+import React from "react";
+
+export type Column<T> = {
   key: keyof T;
   label: string;
+  align?: "left" | "center" | "right";
   render?: (value: T[keyof T], row: T) => React.ReactNode;
-  align?: "left" | "right" | "center";
 };
 
 type TableProps<T> = {
